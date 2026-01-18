@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import "tailwindcss";
+
+/* Base reset */
+* {
+  box-sizing: border-box;
+}
+
+/* Root theme */
+:root {
+  --bg: #03030B;
+  --accent: #F57C00;
+}
+
+/* Body styling */
+body {
+  margin: 0;
+  font-family: 'VT323', monospace;
+  background-color: var(--bg);
+  color: var(--accent);
+}
+img {
+  background-color: transparent;
+}
+
+/* Grid pattern background */
+.bg-grid-pattern {
+  background-image: 
+    linear-gradient(to right, currentColor 1px, transparent 1px),
+    linear-gradient(to bottom, currentColor 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+/* Terminal gradient background */
+.bg-gradient-terminal {
+  background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+}
+
+/* Radial glow for image */
+.bg-radial-glow {
+  background: radial-gradient(circle, currentColor 0%, transparent 70%);
+}
+
+/* Shine overlay for image */
+.bg-shine-overlay {
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+     #06060e 50%,
+    transparent 70%
+  );
+  background-size: 200% 200%;
+}
+
+/* Custom animations */
+@keyframes scan {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+.animate-scan {
+  animation: scan 2s linear infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: -100% -100%;
+  }
+  100% {
+    background-position: 200% 200%;
+  }
+}
+
+.animate-shine {
+  animation: shine 2s linear infinite;
+}
+.hero-grid-base {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(245,124,0,0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245,124,0,0.05) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.hero-grid-cursor {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(245,124,0,0.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(245,124,0,0.35) 1px, transparent 1px);
+  background-size: 50px 50px;
+
+  mask-image: radial-gradient(
+    circle 180px at var(--mouse-x) var(--mouse-y),
+    black 0%,
+    transparent 65%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle 180px at var(--mouse-x) var(--mouse-y),
+    black 0%,
+    transparent 65%
+  );
+}
+.image-mask {
+  mask-image:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      black 15%,
+      black 85%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at center,
+      black 60%,
+      transparent 90%
+    );
+
+  mask-composite: intersect;
+
+  -webkit-mask-image:
+    linear-gradient(
+      to right,
+      transparent 0%,
+      black 15%,
+      black 85%,
+      transparent 100%
+    ),
+    radial-gradient(
+      circle at center,
+      black 60%,
+      transparent 90%
+    );
+
+  -webkit-mask-composite: destination-in;
+}
