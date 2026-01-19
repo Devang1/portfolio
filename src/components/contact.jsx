@@ -31,6 +31,10 @@ const EMAILJS_TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
 const EMAILJS_PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
 const Contact = () => {
+    const isTouchDevice =
+  typeof window !== "undefined" &&
+  window.matchMedia("(hover: none)").matches;
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -41,6 +45,12 @@ const Contact = () => {
   const [submitStatus, setSubmitStatus] = useState(null); // 'success', 'error', null
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [activeField, setActiveField] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+useEffect(() => {
+  setIsMobile(window.innerWidth < 768);
+}, []);
+
   const containerRef = useRef(null);
   const formRef = useRef(null);
 
@@ -58,65 +68,43 @@ const Contact = () => {
 
   // GSAP animations
   useEffect(() => {
-    const ctx = gsap.context(() => {
-      // Terminal typing effect
-      gsap.fromTo(".typing-text",
-        { width: 0 },
-        {
-          width: "100%",
-          duration: 1.5,
-          ease: "power2.inOut",
-          delay: 0.5,
-          scrollTrigger: {
-            trigger: ".contact-header",
-            start: "top 80%",
-          }
-        }
-      );
+  if (!containerRef.current) return;
 
-      // Contact cards entrance
-      gsap.from(".contact-card",
-        {
-          y: 50,
-          opacity: 0,
-          duration: 0.8,
-          stagger: 0.2,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: ".contact-info",
-            start: "top 70%",
-          }
-        }
-      );
+  const ctx = gsap.context(() => {
 
-      // Form entrance
-      gsap.from(".contact-form",
-        {
-          x: -100,
-          opacity: 0,
-          duration: 1,
-          ease: "power3.out",
-          scrollTrigger: {
-            trigger: ".contact-form",
-            start: "top 70%",
-          }
+    gsap.fromTo(".typing-text",
+      { width: 0 },
+      {
+        width: "100%",
+        duration: 1.5,
+        ease: "power2.inOut",
+        delay: 0.5,
+        scrollTrigger: {
+          trigger: ".contact-header",
+          start: "top 80%",
         }
-      );
+      }
+    );
 
-      // Floating icons
-      gsap.to(".floating-icon", {
-        y: 10,
-        duration: 2,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-        stagger: 0.3
+    if (!isMobile) {
+      gsap.from(".contact-card", {
+        y: 50,
+        opacity: 0,
+        duration: 0.8,
+        stagger: 0.2,
+        ease: "power3.out",
+        scrollTrigger: {
+          trigger: ".contact-info",
+          start: "top 70%",
+        }
       });
+    }
 
-    }, containerRef);
+  }, containerRef);
 
-    return () => ctx.revert();
-  }, []);
+  return () => ctx.revert();
+}, [isMobile]);
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -292,40 +280,52 @@ const Contact = () => {
             </div>
 
             {/* Contact Cards */}
-            <div className="space-y-6">
-              {contactInfo.map((info, index) => (
-                <motion.a
-                  key={info.title}
-                  href={info.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, x: -50 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  whileHover={{ x: 10 }}
-                  className="contact-card block"
+            <div className="space-y-4 sm:space-y-6">
+            {contactInfo.map((info) => (
+                <a
+                key={info.title}
+                href={info.link}
+                target={info.title === "LOCATION" ? "_blank" : undefined}
+                rel="noopener noreferrer"
+                className="
+                    contact-card block w-full
+                    transition-transform duration-300
+                    sm:hover:translate-x-2
+                "
                 >
-                  <div className="p-6 rounded-xl border border-gray-800 bg-gray-900/30 backdrop-blur-sm hover:border-[#F57C00]/30 transition-all duration-300 group">
-                    <div className="flex items-start gap-4">
-                      <div 
-                        className="p-3 rounded-lg transition-all duration-300 group-hover:scale-110"
+                <div className="
+                    p-4 sm:p-6 rounded-xl border border-gray-800 bg-gray-900/50
+                    backdrop-blur-none sm:backdrop-blur-sm
+                    hover:border-[#F57C00]/30
+                    transition-all duration-300
+                    will-change-transform
+                ">
+                    <div className="flex items-center gap-3 sm:gap-4">
+                    
+                    <div
+                        className="p-2 sm:p-3 rounded-lg transition-transform duration-300 sm:hover:scale-110 flex-shrink-0"
                         style={{ backgroundColor: `${info.color}20` }}
-                      >
-                        <div style={{ color: info.color }}>
-                          {info.icon}
+                    >
+                        <div style={{ color: info.color }} className="text-xl sm:text-2xl">
+                        {info.icon}
                         </div>
-                      </div>
-                      <div>
-                        <p className="text-gray-400 text-sm mb-1">{info.title}</p>
-                        <p className="text-white text-lg font-medium group-hover:text-[#F57C00] transition-colors">
-                          {info.value}
-                        </p>
-                      </div>
                     </div>
-                  </div>
-                </motion.a>
-              ))}
+
+                    <div className="flex-1 min-w-0">
+                        <p className="text-gray-400 text-xs sm:text-sm mb-1 truncate">
+                        {info.title}
+                        </p>
+                        <p className="text-white text-sm sm:text-lg font-medium break-all sm:break-words sm:hover:text-[#F57C00] transition-colors">
+                        {info.value}
+                        </p>
+                    </div>
+
+                    </div>
+                </div>
+                </a>
+            ))}
             </div>
+
           </div>
 
           {/* Social Links */}

@@ -337,9 +337,8 @@ const Skills = () => {
                   <motion.div
                     key={skill.name}
                     className="skill-orb group relative"
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    transition={{ delay: index * 0.05, type: "spring", stiffness: 100 }}
+                    initial={false}
+                    animate={false}
                     onMouseEnter={() => !isMobile && setHoveredSkill(skill.name)}
                     onMouseLeave={() => !isMobile && setHoveredSkill(null)}
                     onClick={() => isMobile && setHoveredSkill(hoveredSkill === skill.name ? null : skill.name)}
@@ -428,17 +427,6 @@ const Skills = () => {
           </motion.div>
         </AnimatePresence>
       </div>
-
-      {/* Mobile navigation hint */}
-      {isMobile && (
-        <div className="fixed bottom-4 left-0 right-0 z-10 flex justify-center">
-          <div className="px-4 py-2 bg-gray-900/80 backdrop-blur-sm rounded-full border border-gray-700">
-            <p className="text-xs text-gray-400 text-center">
-              Tap skills for details • Swipe to navigate
-            </p>
-          </div>
-        </div>
-      )}
 
     </section>
   );

@@ -1,5 +1,18 @@
 import React, { useState, useEffect } from "react";
-function HeroSection() {
+  const useIsMobile = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 1024);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  return isMobile;
+};
+function HeroDesktop() {
+
   const [cursorVisible, setCursorVisible] = useState(true);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
     useEffect(() => {
@@ -192,5 +205,127 @@ function HeroSection() {
     </section>
   );
 }
+function HeroMobile() {
+  const [cursorVisible, setCursorVisible] = useState(true);
 
-export default HeroSection;
+  useEffect(() => {
+    const i = setInterval(() => setCursorVisible(p => !p), 500);
+    return () => clearInterval(i);
+  }, []);
+
+  return (
+    <section className="min-h-screen w-full px-5 pt-24 pb-14 bg-gradient-to-br from-[#030a1c] to-black  overflow-hidden">
+
+      {/* Background grid */}
+      <div className="absolute inset-0 hero-grid-base opacity-50" />
+
+      {/* ===== NAME + IMAGE BLOCK ===== */}
+      <div className="relative z-10 flex items-start justify-between gap-5">
+
+        {/* LEFT : NAME */}
+        <div className="space-y-2">
+  <p className="text-sm tracking-widest opacity-80">
+    Hi there,
+  </p>
+
+  <h1 className="text-4xl font-extrabold leading-tight tracking-tight">
+    <span className="block text-white">
+      I&apos;m
+    </span>
+
+    <span className="block text-[#f57b00] drop-shadow-[0_0_12px_rgba(245,123,0,0.35)]">
+      Devang
+    </span>
+
+    <span className="block text-white">
+      Kishore Shukla
+    </span>
+  </h1>
+
+  {/* accent line */}
+  <div className="w-16 h-[3px] bg-[#f57b00] rounded-full mt-3" />
+</div>
+
+
+        {/* RIGHT : IMAGE */}
+<div className="w-[48%] max-w-[210px] mt-6 relative">
+  
+
+  {/* Image container */}
+  <div className="relative rounded-2xl overflow-hidden">
+
+    {/* Image */}
+    <div className="aspect-[3/4] w-full relative">
+      <img
+        src="/hero.jpeg"
+        alt="Devang Kishore Shukla"
+        className="w-full h-full object-cover "
+      />
+
+      {/* RIGHT side black fade */}
+      <div className="absolute inset-y-0 right-0 w-1/3 
+        bg-gradient-to-l from-black via-black/70 to-transparent" />
+
+      {/* BOTTOM black fade */}
+      <div className="absolute inset-x-0 bottom-0 h-1/4 
+        bg-gradient-to-t from-black via-black/70 to-transparent" />
+
+      {/* SUBTLE overall vignette */}
+      <div className="absolute inset-0 
+        bg-gradient-to-br from-transparent via-transparent to-black/30" />
+        
+    </div>
+
+  </div>
+</div>
+
+      </div>
+
+      {/* ===== SKILLS ===== */}
+      <ul className="relative z-10 mt-12 space-y-5 text-[17px] font-medium">
+        {[
+          "Full-Stack MERN Developer",
+          "API & Authentication Experienced",
+          "Modern Web Solutions",
+        ].map((item, i) => (
+          <li key={i} className="flex items-center gap-4">
+            <span className="w-2.5 h-2.5 bg-current rounded-full opacity-80" />
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      {/* ===== TERMINAL ===== */}
+      <div className="relative z-10 mt-12 bg-gradient-terminal
+        border border-white/15 rounded-2xl
+        p-6 text-[15px] backdrop-blur-lg">
+
+        <div className="flex gap-2.5 mb-4">
+          {[1, 2, 3].map(i => (
+            <span
+              key={i}
+              className="w-3.5 h-3.5 bg-current rounded-full opacity-30"
+            />
+          ))}
+        </div>
+
+        <p className="opacity-90">~$ WELCOME TO DEVANG&apos;S PORTFOLIO</p>
+        <p className="opacity-90 mt-1">~$ SCROLL TO GET STARTED</p>
+
+        <p className="mt-4 flex items-center">
+          USER: -$
+          <span className={`ml-1 ${cursorVisible ? "opacity-100" : "opacity-0"}`}>
+            █
+          </span>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+
+
+export default function HeroSection() {
+  const isMobile = useIsMobile();
+  return isMobile ? <HeroMobile /> : <HeroDesktop />;
+}

@@ -97,7 +97,10 @@ const Projects = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [isMobile, setIsMobile] = useState(false);
+  const canvasWrapperRef = useRef(null);
   const containerRef = useRef(null);
+  const isTouchingCanvas = useRef(false);
+
   const terminalRef = useRef(null);
   const currentProject = myProjects[selectedProjectIndex];
   const accentColor = "#F57C00";
@@ -194,16 +197,31 @@ const Projects = () => {
     let touchEndX = 0;
 
     const handleTouchStart = (e) => {
-      touchStartX = e.changedTouches[0].screenX;
-    };
+  const target = e.target;
+
+  if (canvasWrapperRef.current?.contains(target)) {
+    isTouchingCanvas.current = true;
+    return;
+  }
+
+  isTouchingCanvas.current = false;
+  touchStartX = e.changedTouches[0].screenX;
+};
+
 
     const handleTouchEnd = (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      handleSwipe();
-    };
+  if (isTouchingCanvas.current) {
+    isTouchingCanvas.current = false;
+    return;
+  }
+
+  touchEndX = e.changedTouches[0].screenX;
+  handleSwipe();
+};
+
 
     const handleSwipe = () => {
-      const swipeThreshold = 50;
+      const swipeThreshold = 80;
       const diff = touchStartX - touchEndX;
 
       if (Math.abs(diff) > swipeThreshold) {
@@ -283,7 +301,7 @@ const Projects = () => {
       <div className="flex flex-col lg:grid lg:grid-cols-2 gap-8 sm:gap-10 relative">
         
         {/* 3D Panel FIRST on Mobile, SECOND on Desktop */}
-        <div className={`relative h-[300px] sm:h-[350px] md:h-[400px] lg:h-[480px] order-first lg:order-last ${isMobile ? 'mb-6' : ''}`}>
+        <div ref={canvasWrapperRef} className={`relative h-[300px] sm:h-[350px] md:h-[400px] lg:h-[480px] order-first lg:order-last ${isMobile ? 'mb-6' : ''}`}>
           {/* Mobile navigation overlay */}
           {isMobile && (
             <div className="absolute top-4 left-4 right-4 z-20 flex justify-between items-center">
